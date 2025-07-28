@@ -3,9 +3,137 @@
  * Responsive design with accessibility considerations
  */
 
+/* Light mode (default) */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: #f8f9fa;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+[data-theme="dark"] body{
+    color: #0080ff;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .sidebar {
+    background-color: #1e1e1e;
+    border-right-color: #404040;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] .main-content {
+    background-color: #1a1a1a;
+}
+
+[data-theme="dark"] .control-panel {
+    background-color: #2d2d2d;
+    border-bottom-color: #404040;
+}
+
+[data-theme="dark"] #rawInput {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] #rawInput::placeholder {
+    color: #a0a0a0;
+}
+
+[data-theme="dark"] .subject-card {
+    background: linear-gradient(135deg, #2d2d2d, #3a3a3a);
+    color: #e0e0e0;
+    border-color: #4a90e2;
+}
+
+[data-theme="dark"] .subject-card:hover,
+[data-theme="dark"] .subject-card.expanded {
+    background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
+    border-color: #5ba0f2;
+}
+
+[data-theme="dark"] .class-item {
+    background: rgba(74, 144, 226, 0.2);
+    border-color: rgba(74, 144, 226, 0.3);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .class-item:hover {
+    background: rgba(74, 144, 226, 0.3);
+}
+
+[data-theme="dark"] .class-item.selected {
+    background: rgba(74, 144, 226, 0.4);
+    border-color: #4a90e2;
+}
+
+[data-theme="dark"] .external-section {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+[data-theme="dark"] .external-section:hover {
+    background: linear-gradient(135deg, #357abd, #2c5f91);
+}
+
+[data-theme="dark"] .footer {
+    background-color: #1a1a1a;
+    border-top-color: #404040;
+}
+
+[data-theme="dark"] .footer h5 {
+    color: #4a90e2;
+}
+
+[data-theme="dark"] .footer p,
+[data-theme="dark"] .footer .text-muted {
+    color: #a0a0a0 !important;
+}
+
+[data-theme="dark"] .footer a {
+    color: #4a90e2;
+}
+
+[data-theme="dark"] .footer a:hover {
+    color: #5ba0f2;
+}
+
+[data-theme="dark"] .footer hr {
+    border-color: #404040;
+}
+
+[data-theme="dark"] .credit-links a {
+    background-color: rgba(74, 144, 226, 0.2);
+    border-color: rgba(74, 144, 226, 0.3);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .credit-links a:hover {
+    background-color: rgba(74, 144, 226, 0.3);
+}
+
+/* Theme toggle button styling */
+#themeToggle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] #themeToggle {
+    background-color: #2d2d2d;
+    border-color: #4a90e2;
+    color: #e0e0e0;
+}
+
+#themeToggle:hover {
+    transform: scale(1.1);
 }
 
 .sidebar {

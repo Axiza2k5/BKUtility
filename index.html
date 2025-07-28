@@ -40,6 +40,9 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
     
@@ -57,27 +60,35 @@
             <div class="col-lg-8 col-md-8 main-content p-0">
                 <!-- Control Panel -->
                 <div class="control-panel">
-                    <div class="d-flex flex-wrap gap-2 justify-content-end">
-                        <!-- <button id="saveSchedule" class="btn btn-success btn-sm btn-custom" type="button">
-                            <i class="bi bi-save" aria-hidden="true"></i>
-                            Save
+                    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                        <!-- Theme toggle button on the left -->
+                        <button id="themeToggle" class="btn btn-outline-secondary btn-sm" type="button" title="Toggle dark/light mode">
+                            <i class="bi bi-moon-fill" id="themeIcon" aria-hidden="true"></i>
                         </button>
-                        <button id="loadSchedule" class="btn btn-info btn-sm btn-custom" type="button">
-                            <i class="bi bi-folder-open" aria-hidden="true"></i>
-                            Load -->
-                        <!-- </button>
-                        <button id="exportJson" class="btn btn-warning btn-sm btn-custom" type="button">
-                            <i class="bi bi-file-earmark-code" aria-hidden="true"></i>
-                            Export JSON
-                        </button> -->
-                        <button id="exportIcs" class="btn btn-primary btn-sm btn-custom" type="button">
-                            <i class="bi bi-calendar-download" aria-hidden="true"></i>
-                            Export .ics
-                        </button>
-                        <button id="clearSchedule" class="btn btn-danger btn-sm btn-custom" type="button">
-                            <i class="bi bi-trash" aria-hidden="true"></i>
-                            Clear
-                        </button>
+                        
+                        <!-- Action buttons on the right -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <!-- <button id="saveSchedule" class="btn btn-success btn-sm btn-custom" type="button">
+                                <i class="bi bi-save" aria-hidden="true"></i>
+                                Save
+                            </button>
+                            <button id="loadSchedule" class="btn btn-info btn-sm btn-custom" type="button">
+                                <i class="bi bi-folder-open" aria-hidden="true"></i>
+                                Load -->
+                            <!-- </button>
+                            <button id="exportJson" class="btn btn-warning btn-sm btn-custom" type="button">
+                                <i class="bi bi-file-earmark-code" aria-hidden="true"></i>
+                                Export JSON
+                            </button> -->
+                            <button id="exportIcs" class="btn btn-primary btn-sm btn-custom" type="button">
+                                <i class="bi bi-calendar-download" aria-hidden="true"></i>
+                                Export .ics
+                            </button>
+                            <button id="clearSchedule" class="btn btn-danger btn-sm btn-custom" type="button">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -143,7 +154,7 @@ Thứ 5	- 2 3 4 - - - - - - - - - - - -	B4-505	1		12--56789-12----789012-------
                 <div class="col-md-8">
                     <h5>BKUtility</h5>
                     <!-- <p>A comprehensive university schedule planner built with modern web technologies.</p> -->
-                    <p class="text-muted">Designed for students to efficiently manage their course schedules with conflict detection and calendar integration.</p>
+                    <p class="text-muted">Designed for students to efficiently manage their course schedules with conflict detection and calendar integration. <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="text-decoration-none">Learn more</a></p>
                 </div>
                 <div class="col-md-4">
                     <h5>Built With</h5>

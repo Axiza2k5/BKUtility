@@ -23,6 +23,7 @@ class BKUtility {
     init() {
         this.initializeCalendar();
         this.attachEventListeners();
+        this.initializeTheme();
         this.loadFromStorage();
         
         console.log('BKUtility initialized successfully');
@@ -93,6 +94,11 @@ class BKUtility {
 
         document.getElementById('clearSchedule').addEventListener('click', () => {
             this.clearSchedule();
+        });
+
+        // Theme toggle button
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            this.toggleTheme();
         });
     }
 
@@ -1089,6 +1095,46 @@ class BKUtility {
             localStorage.removeItem('BKUtility-schedule');
             
             this.showToast('Schedule cleared', 'info');
+        }
+    }
+
+    /**
+     * Initialize theme on application startup
+     */
+    initializeTheme() {
+        // Load theme preference from localStorage
+        const savedTheme = localStorage.getItem('bkutility-theme') || 'light';
+        this.setTheme(savedTheme);
+    }
+
+    /**
+     * Toggle between light and dark themes
+     */
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        this.setTheme(newTheme);
+    }
+
+    /**
+     * Set the theme and update UI
+     * @param {string} theme - 'light' or 'dark'
+     */
+    setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Update the theme toggle icon
+        const themeIcon = document.getElementById('themeIcon');
+        if (themeIcon) {
+            themeIcon.className = theme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+        }
+        
+        // Save theme preference
+        localStorage.setItem('bkutility-theme', theme);
+        
+        // Refresh calendar to apply theme changes
+        if (this.calendar) {
+            this.calendar.render();
         }
     }
 
