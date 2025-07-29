@@ -180,7 +180,7 @@ class BKUtility {
 
             }
 
-            if(!lines[i].includes("Thứ") && !lines[i].includes("Chủ nhật")) {
+            if(!lines[i].includes("Thứ") && !lines[i].includes("Chủ nhật") && !lines[i].includes("Chưa biết")) {
                 break;
             }
             try {
