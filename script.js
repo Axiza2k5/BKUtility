@@ -227,7 +227,7 @@ class IUtility {
             'Ba': 2,
             'Tư': 3,
             'Năm': 4,
-            'Sáu': 5,
+            'Sáu': 5,
             'Bảy': 6,
             'Chủ nhật': 7
         };
@@ -262,7 +262,13 @@ class IUtility {
         // }
 
         // Parse weeks (52 character string, digits indicate active weeks)
-        let weeksStr = lines[2 + 5 * classnumber + i].trim();
+        let weeksStr;
+        try{
+            weeksStr = lines[2 + 5 * classnumber + i].trim();
+        }
+        catch(e){
+            weeksStr = lines[2 + 4 * classnumber + i].trim();
+        }
         const weeks = [];
         weeksStr.split('').forEach((ch, idx) => {
             if(ch === '-')
@@ -271,6 +277,7 @@ class IUtility {
         });
 
         let room = lines[2 + 3 * classnumber + i].trim();
+        // if (/online/i.test(room))
 
         if (weeks.length === 0) {
             throw new Error('No active weeks found');
