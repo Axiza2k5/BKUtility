@@ -267,7 +267,7 @@ class IUtility {
         weeksStr.split('').forEach((ch, idx) => {
             if(ch === '-')
                 ;
-            else weeks.push(idx+35);
+            else weeks.push(idx+36);
         });
 
         let room = lines[2 + 3 * classnumber + i].trim();
