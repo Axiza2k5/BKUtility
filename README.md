@@ -1,2 +1,2 @@
-# BKUtility
-Subject planner for BKU students
+# IUtility
+Inspired by Bkalendar.

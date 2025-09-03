@@ -1,5 +1,5 @@
 /**
- * BKUtility - University Schedule Planner
+ * IUtility - University Schedule Planner
  * A comprehensive calendar application for managing university course schedules
  * 
  * Features:
@@ -9,7 +9,7 @@
  * - Responsive design with accessibility support
  */
 
-class BKUtility {
+class IUtility {
     constructor() {
         this.calendar = null;
         this.subjects = new Map(); // Map of subject name to classes
@@ -26,7 +26,7 @@ class BKUtility {
         this.initializeTheme();
         this.loadFromStorage();
         
-        console.log('BKUtility initialized successfully');
+        console.log('IUtility initialized successfully');
     }
 
     /**
@@ -116,93 +116,35 @@ class BKUtility {
         }
 
         const lines = rawInput.split('\n').filter(line => line.trim());
-        const subjectList = document.getElementById('subjectList');
+        // const subjectList = document.getElementById('subjectList');
         
-        // Clear existing subjects
-        // subjectList.innerHTML = '';
-        // this.subjects.clear();
-        // this.selectedClasses.clear();
-
         let parsedCount = 0;
-
-        // lines.forEach((line, index) => {
-        //     try {
-        //         const parsedClass = this.parseLine(line.trim());
-        //         if (parsedClass) {
-        //             const subjectName = parsedClass.subjectname;
-        //             const classCode = parsedClass.classCode;
-                    
-        //             if (!this.subjects.has(subjectName)) {
-        //                 this.subjects.set(subjectName, new Map());
-        //             }
-                    
-        //             const subjectClasses = this.subjects.get(subjectName);
-                    
-        //             // Group by class code
-        //             if (!subjectClasses.has(classCode)) {
-        //                 subjectClasses.set(classCode, {
-        //                     classCode: classCode,
-        //                     subjectname: subjectName,
-        //                     timeSlots: []
-        //                 });
-        //             }
-                    
-        //             subjectClasses.get(classCode).timeSlots.push(parsedClass);
-        //             parsedCount++;
-        //         }
-        //     } catch (error) {
-        //         console.error(`Error parsing line ${index + 1}:`, error);
-        //         this.showToast(`Error parsing line ${index + 1}: ${error.message}`, 'danger');
-        //     }
-        // });
-
-        let startLine = 0;
-        for (let i = 0; i < lines.length; i++) {
-            startLine = lines[i].includes("Nhóm lớp") ? i : startLine;
-            if(startLine)
-                break;
-        }
-
-        const subjectName = lines[startLine-1].split('\t')[0].split('-')[1].trim();
-        const subjectCode = lines[startLine-1].split('\t')[0].split('-')[0].trim();
         let classCode;
         let nthTimeSlot = 0;
+        let n = 1;
         // console.log('Subject Name:', subjectName);
-        for (let i = startLine + 1; i < lines.length; i++) {
-            if(lines[i].includes("Thứ")|| lines[i].includes("DK")){
-                continue;
-            }
-            
-            if(lines[i].includes("CC") || lines[i].includes("L") || lines[i].includes("CN") || lines[i].includes("TN0") || lines[i].includes("DT") || lines[i].includes("AN") || lines[i].includes("P0")) {
-                classCode = lines[i].split('\t')[0].trim();
-                nthTimeSlot = 0;
-                continue;
 
-            }
-
-            if(!lines[i].includes("Thứ") && !lines[i].includes("Chủ nhật") && !lines[i].includes("Chưa biết")) {
-                break;
-            }
+        for (let i = 0; i < n; i += 1) {
             try {
-                const parsedClass = this.parseLine(lines[i].trim(),classCode);
+                const parsedClass = this.parseLine(lines, i);
 
-                if(!this.subjects.has(subjectName)) {
-                    this.subjects.set(subjectName, new Map());
+                if(!this.subjects.has(parsedClass.subjectName)) {
+                    this.subjects.set(parsedClass.subjectName, new Map());
                 }
 
-                const subjectClasses = this.subjects.get(subjectName);
-                if (!subjectClasses.has(classCode)) {
-                    subjectClasses.set(classCode, {
-                        classCode: classCode,
-                        subjectname: subjectName,
+                const subjectClasses = this.subjects.get(parsedClass.subjectName);
+                if (!subjectClasses.has(parsedClass.classCode)) {
+                    subjectClasses.set(parsedClass.classCode, {
+                        classCode: parsedClass.classCode,
+                        subjectname: parsedClass.subjectName,
                         timeSlots: []
                     });
                 }
 
                 let ClassData = {
-                    title: subjectName,                     //
-                    subjectname: subjectName,               //
-                    classCode: classCode,                   //
+                    title: parsedClass.subjectName,                     //
+                    subjectname: parsedClass.subjectName,               //
+                    classCode: parsedClass.classCode,                   //
                     days: parsedClass.days,
                     startTime: parsedClass.startTime,
                     period: parsedClass.period,
@@ -210,23 +152,20 @@ class BKUtility {
                     weeks: parsedClass.weeks,
                     hours: parsedClass.hours,
                     minutes: parsedClass.minutes,
-                    notes: subjectCode + "\n" + classCode.split('_')[nthTimeSlot] + "\n" + parsedClass.notes,
+                    notes: parsedClass.subjectCode + "\n" + parsedClass.classCode.split('_')[nthTimeSlot] + "\n" + parsedClass.notes,
                     timeSlot: parsedClass.timeSlot
                 }
+                n = parsedClass.classnumber;
 
                 nthTimeSlot++;
-                subjectClasses.get(classCode).timeSlots.push(ClassData);
+                subjectClasses.get(parsedClass.classCode).timeSlots.push(ClassData);
                 parsedCount++;
 
             } catch (error) {
                 console.error(`Error parsing line ${i + 1}:`, error);
                 this.showToast(`Error parsing line ${i + 1}: ${error.message}`, 'danger');
             }
-            // }
-
         }
-
-
 
         if (parsedCount > 0) {
             this.createSubjectCards();
@@ -242,14 +181,15 @@ class BKUtility {
      * Parse a single line of course data
      * @param {string} line - Raw course data line
      * @returns {Object} Parsed class data
+     * 
      */
-    parseLine(line,classCode) {
+    parseLine(lines, i) {
         // if (!line || !line.includes('|')) {
         //     throw new Error('Invalid line format - missing separators');
         // }
 
 
-        const parts = line.split('\t').map(s => s.trim());
+        // const parts = line.split('\t').map(s => s.trim());
         // if (parts.length !== 8) {
         //     throw new Error(`Expected 8 parts, got ${parts.length}`);
         // }
@@ -258,48 +198,62 @@ class BKUtility {
         // Thứ 6	- - - - - - - 8 9 - - - - - - -	C5-503	1		12--56789-12345678------------
 
         // const [subjectname, classCode, daysStr, timeStr, periodStr, room, weeksStr, notes] = parts;
-        const [daysStr, timeStr, room, _, __, weeksStr] = parts;
+        // IT013IU	Algorithms & Data Structures	02	4	ITIT23WE41	4		
+        // 01
+        // Ba
+        // Tư
+        // 1
+        // 7
+        // 3
+        // 3
+        // ONLINE1
+        // A2.205
+        // 0850
+        // 0879
+        // 06/10/2025--14/12/2025
+        // 08/09/2025--21/12/2025
 
-        // Validate required fields (notes is optional)
-        if (!daysStr || !timeStr || !room || !weeksStr) {
-            throw new Error('Missing required fields');
+        // const [daysStr, timeStr, room, _, __, weeksStr] = parts;
+        let classnumber = 1;
+        let classCode = lines[0].split('\t')[2].trim();
+        let subjectName = lines[0].split('\t')[1].trim();
+        if (isNaN(parseInt(lines[3], 10))) {
+            classnumber = 2;
         }
 
-        // Parse days (1-7, space separated)
-        // const days = daysStr.split(/\s+/).map(d => {
-        //     const day = parseInt(d.split(' ')[1]-1, 10);
-        //     if (isNaN(day) || day < 1 || day > 7) {
-        //         throw new Error(`Invalid day: ${d}`);
-        //     }
-        //     return day;
-        // });
         const days = [];
-        if (daysStr.includes('Chủ nhật')) {
-            days.push(7);
+        const dayMap = {
+            'Hai': 1,
+            'Ba': 2,
+            'Tư': 3,
+            'Năm': 4,
+            'Sáu': 5,
+            'Bảy': 6,
+            'Chủ nhật': 7
+        };
+        if (dayMap.hasOwnProperty(lines[2+i].trim())) {
+            days.push(dayMap[lines[2+i].trim()]);
+        } else {
+            throw new Error(`Unknown day: ${lines[2+i]}`);
         }
-        else {
-            days.push(parseInt(daysStr.split(' ')[1],10)-1);
-        }
+
+
         // Parse time (HH:mm format)
         // const timeMatch = timeStr.match(/^(\d{1,2}):(\d{2})$/);
         // if (!timeMatch) {
         //     throw new Error(`Invalid time format: ${timeStr}`);
         // }
-        let period = 16*60;
-        let timeMatch = 0;
-        for (let i of timeStr.split(' ')) {
-            if (i.includes('-')) {
-                period -= 60;
-                continue;
-            }
-            if(!timeMatch) {
-                timeMatch = parseInt(i, 10);
-            }
+        let timeStr = parseInt(lines[2 + 1 * classnumber + i].trim(), 10);
+        let extend_map = [0, 0, 0, 0, 5, 0, 0, 10, 0, 0, 5, 0, 0]
+        let hours_map = [0, 8, 8, 9, 10, 11, 12, 13, 14, 14, 15, 16, 17]
+        let minutes_map = [0, 0, 50, 40, 35, 25, 15, 15, 5, 55, 50, 40, 30]
+        let period = parseInt(lines[2 + 2 * classnumber + i].trim(), 10) * 50;
+        for(let j = timeStr+1; j < timeStr + parseInt(lines[2 + 2 * classnumber + i].trim(), 10); j++) {
+            period += extend_map[j];
         }
-        period -= 10;
 
-        const hours = timeMatch+5;
-        const minutes = 0;
+        const hours = hours_map[timeStr];
+        const minutes = minutes_map[timeStr];
 
         // Parse period (minutes)
         // const period = parseInt(periodStr, 10);
@@ -308,28 +262,24 @@ class BKUtility {
         // }
 
         // Parse weeks (52 character string, digits indicate active weeks)
+        let weeksStr = lines[2 + 5 * classnumber + i].trim();
         const weeks = [];
         weeksStr.split('').forEach((ch, idx) => {
             if(ch === '-')
                 ;
-            else weeks.push(idx+37);
+            else weeks.push(idx+35);
         });
-        // if (weeksStr.length !== 52) {
-        //     throw new Error(`Weeks string must be exactly 52 characters, got ${weeksStr.length}`);
-        // }
-        
-        // const weeks = [];
-        // weeksStr.split('').forEach((ch, idx) => {
-        //     if (/\d/.test(ch) && ch !== '0') {
-        //         weeks.push(idx + 1);
-        //     }
-        // });
+
+        let room = lines[2 + 3 * classnumber + i].trim();
 
         if (weeks.length === 0) {
             throw new Error('No active weeks found');
         }
 
         return {
+            classnumber,
+            classCode,
+            subjectName,
             days,
             startTime: `${hours.toString().padStart(2, '0')}:00`,
             period,
@@ -339,7 +289,7 @@ class BKUtility {
             minutes,
             notes: '', // Notes field (optional)
             // Create unique identifier for class time slots
-            timeSlot: `${classCode}-${days.toString}-${hours}:00-${room}`
+            timeSlot: '${classCode}-${days.toString}-${hours}:00-${room}'
         };
     }
     // parseLine(line) {
@@ -879,7 +829,7 @@ class BKUtility {
                 timestamp: new Date().toISOString()
             };
 
-            localStorage.setItem('BKUtility-schedule', JSON.stringify(data));
+            localStorage.setItem('IUtility-schedule', JSON.stringify(data));
             this.showToast('Schedule saved successfully', 'success');
         } catch (error) {
             console.error('Save error:', error);
@@ -892,7 +842,7 @@ class BKUtility {
      */
     loadFromStorage() {
         try {
-            const saved = localStorage.getItem('BKUtility-schedule');
+            const saved = localStorage.getItem('IUtility-schedule');
             if (!saved) {
                 return;
             }
@@ -1008,7 +958,7 @@ class BKUtility {
         let icsContent = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//BKUtility//University Schedule Planner//EN',
+            'PRODID:-//IUtility//University Schedule Planner//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH'
         ];
@@ -1027,7 +977,7 @@ class BKUtility {
                 return `${year}${month}${day}T${hours}${minutes}${seconds}`;
             };
 
-            const uid = `${Date.now()}-${index}@BKUtility.local`;
+            const uid = `${Date.now()}-${index}@IUtility.local`;
             const created = formatDate(new Date());
             
             // Escape special characters in text fields
@@ -1058,7 +1008,7 @@ class BKUtility {
         icsContent.push('END:VCALENDAR');
         
         const icsText = icsContent.join('\r\n');
-        this.downloadIcsFile(icsText, 'BKUtilitySchedule.ics');
+        this.downloadIcsFile(icsText, 'IUtilitySchedule.ics');
     }
 
     /**
@@ -1092,7 +1042,7 @@ class BKUtility {
             document.getElementById('rawInput').value = '';
             
             // Clear localStorage
-            localStorage.removeItem('BKUtility-schedule');
+            localStorage.removeItem('IUtility-schedule');
             
             this.showToast('Schedule cleared', 'info');
         }
@@ -1103,7 +1053,7 @@ class BKUtility {
      */
     initializeTheme() {
         // Load theme preference from localStorage
-        const savedTheme = localStorage.getItem('bkutility-theme') || 'light';
+        const savedTheme = localStorage.getItem('iutility-theme') || 'light';
         this.setTheme(savedTheme);
     }
 
@@ -1130,7 +1080,7 @@ class BKUtility {
         }
         
         // Save theme preference
-        localStorage.setItem('bkutility-theme', theme);
+        localStorage.setItem('iutility-theme', theme);
         
         // Refresh calendar to apply theme changes
         if (this.calendar) {
@@ -1161,7 +1111,7 @@ class BKUtility {
         const toastHtml = `
             <div id="${toastId}" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
-                    <strong class="me-auto text-${type}">BKUtility</strong>
+                    <strong class="me-auto text-${type}">IUtility</strong>
                     <small class="text-muted">now</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -1239,21 +1189,21 @@ class BKUtility {
 
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.BKUtility = new BKUtility();
+    window.IUtility = new IUtility();
 });
 
 // Global error handler
 window.addEventListener('error', (e) => {
     console.error('Global error:', e.error);
-    if (window.BKUtility) {
-        window.BKUtility.showToast('An unexpected error occurred', 'danger');
+    if (window.IUtility) {
+        window.IUtility.showToast('An unexpected error occurred', 'danger');
     }
 });
 
 // Global unhandled promise rejection handler
 // window.addEventListener('unhandledrejection', (e) => {
 //     console.error('Unhandled promise rejection:', e.reason);
-//     if (window.BKUtility) {
-//         window.BKUtility.showToast('An unexpected error occurred', 'danger');
+//     if (window.IUtility) {
+//         window.IUtility.showToast('An unexpected error occurred', 'danger');
 //     }
 // });
