@@ -173,7 +173,7 @@ class BKUtility {
                 continue;
             }
             
-            if(lines[i].includes("CC") || lines[i].includes("L") || lines[i].includes("CN") || lines[i].includes("TN0") || lines[i].includes("DT") || lines[i].includes("AN") || lines[i].includes("P0")) {
+            if(lines[i].includes("CC") || lines[i].includes("L") || lines[i].includes("CN") || lines[i].includes("TN0") || lines[i].includes("DT") || lines[i].includes("AN") || lines[i].includes("P0") || lines[i].includes("A0")) {
                 classCode = lines[i].split('\t')[0].trim();
                 nthTimeSlot = 0;
                 continue;
